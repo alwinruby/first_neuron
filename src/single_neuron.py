@@ -1,3 +1,5 @@
+# A single neuron with 3 inputs
+
 inputs = [1.0, 2.0, 3.0]
 weights = [0.2, 0.8, -0.5]
 bias = 2.0
