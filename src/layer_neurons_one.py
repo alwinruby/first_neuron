@@ -33,3 +33,9 @@ output = [
 
 
 print(output)
+
+# This is called a fully connected neural network — every
+# neuron in the current layer has connections to every neuron from the previous layer. This is
+# a very common type of neural network, but it should be noted that there is no requirement to
+# fully connect everything like this.
+
