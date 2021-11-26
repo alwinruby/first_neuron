@@ -22,3 +22,9 @@ for neuron_weights, neuron_bias in zip(weights, biases):
 
 
 print(layer_outputs)
+
+# How do we know we have three neurons? Why do we have three? We can tell we have
+# three neurons because there are 3 sets of weights and 3 biases. When you make a neural network
+# of your own, you also get to decide how many neurons you want for each of the layers. You can
+# combine however many inputs you are given with however many neurons that you desire.
+
