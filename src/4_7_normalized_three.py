@@ -13,3 +13,6 @@ print(np.sum(layer_outputs, axis=0))
 print('But we want to sum the rows instead, like this w/ raw py:')
 for i in layer_outputs:
     print(sum(i))
+
+print('So we can sum axis 1, but note the current shape:')
+print(np.sum(layer_outputs, axis=1))
