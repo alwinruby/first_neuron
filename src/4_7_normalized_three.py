@@ -16,3 +16,6 @@ for i in layer_outputs:
 
 print('So we can sum axis 1, but note the current shape:')
 print(np.sum(layer_outputs, axis=1))
+
+print('Sum axis 1, but keep the same dimensions as input:')
+print(np.sum(layer_outputs, axis=1, keepdims=True))
