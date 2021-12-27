@@ -6,3 +6,6 @@ print('Sum without axis')
 print(np.sum(layer_outputs))
 print('This will be identical to the above since default is None:')
 print(np.sum(layer_outputs, axis=None))
+
+print('Another way to think of it w/ a matrix == axis 0: columns:')
+print(np.sum(layer_outputs, axis=0))
