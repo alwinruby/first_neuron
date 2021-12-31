@@ -25,5 +25,8 @@ print(np.exp(100))
 print(np.exp(-np.inf), np.exp(0))
 
 softmax = Activation_Softmax()
-softmax.forward([[1, 2, 3]])
+# softmax.forward([[1, 2, 3]])
+# print(softmax.output)
+
+softmax.forward([[-2, -1, 0]]) # subtracted 3 - max from the list
 print(softmax.output)
