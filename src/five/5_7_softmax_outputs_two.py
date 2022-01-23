@@ -22,3 +22,5 @@ print(average_loss)
 import numpy as np
 
 print(-np.log(0))
+
+print(np.e**(-np.inf))
