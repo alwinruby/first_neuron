@@ -5,6 +5,7 @@ from nnfs.datasets import vertical_data
 
 nnfs.init()
 
+
 # Dense layer
 class Layer_Dense:
 
@@ -25,6 +26,7 @@ class Activation_ReLU:
 
     # Forward pass
     def forward(self, inputs):
+
         # Calculate output values from inputs
         self.output = np.maximum(0, inputs)
 
