@@ -622,4 +622,4 @@ if len(y_test.shape) == 2:
     y_test = np.argmax(y_test, axis=1)
 accuracy = np.mean(predictions == y_test)
 
-print(f'validation, acc: {accuracy:.3f}, loss: {loss:.3f}')
+print(f'validation, acc: {accuracy:.3f}, loss: {loss:.3f}pwd')
