@@ -348,45 +348,46 @@ class Optimizer_Adam:
             layer.bias_momentums = np.zeros_like(layer.biases)
             layer.bias_cache = np.zeros_like(layer.biases)
 
-    # Update momentum with current gradients
-    layer.weight_momentums = self.beta_1 * \
-                             layer.weight_momentums + \
-                             (1 - self.beta_1) * layer.dweights
-    layer.bias_momentums = self.beta_1 * \
-                           layer.bias_momentums + \
-                           (1 - self.beta_1) * layer.dbiases
+        # Update momentum with current gradients
+        layer.weight_momentums = self.beta_1 * \
+                                 layer.weight_momentums + \
+                                 (1 - self.beta_1) * layer.dweights
+        layer.bias_momentums = self.beta_1 * \
+                               layer.bias_momentums + \
+                               (1 - self.beta_1) * layer.dbiases
 
-    # Get corrected momentum
-    # self.iteration is 0 at first pass
-    # and we need to start with 1 here
-    weight_momentums_corrected = layer.weight_momentums / \
-                                 (1 - self.beta_1 ** (self.iterations + 1))
-    bias_momentums_corrected = layer.bias_momentums / \
-                               (1 - self.beta_1 ** (self.iterations + 1))
+        # Get corrected momentum
+        # self.iteration is 0 at first pass
+        # and we need to start with 1 here
+        weight_momentums_corrected = layer.weight_momentums / \
+                                     (1 - self.beta_1 ** (self.iterations + 1))
+        bias_momentums_corrected = layer.bias_momentums / \
+                                   (1 - self.beta_1 ** (self.iterations + 1))
 
-    # Update cache with squared current gradients
-    layer.weight_cache = self.beta_2 * layer.weight_cache + \
-                         (1 - self.beta_2) * layer.dweights**2
+        # Update cache with squared current gradients
+        layer.weight_cache = self.beta_2 * layer.weight_cache + \
+                             (1 - self.beta_2) * layer.dweights**2
 
-    layer.bias_cache = self.beta_2 * layer.bias_cache + \
-                       (1 - self.beta_2) * layer.dbiases**2
+        layer.bias_cache = self.beta_2 * layer.bias_cache + \
+                           (1 - self.beta_2) * layer.dbiases**2
 
-    # Get corrected cache
-    weight_cache_corrected = layer.weight_cache / \
-                             (1 - self.beta_2 ** (self.iterations + 1))
-    bias_cache_corrected = layer.bias_cache / \ (1 - self.beta_2 ** (self.iterations + 1))
+        # Get corrected cache
+        weight_cache_corrected = layer.weight_cache / \
+                                 (1 - self.beta_2 ** (self.iterations + 1))
+        bias_cache_corrected = layer.bias_cache / \
+                               (1 - self.beta_2 ** (self.iterations + 1))
 
-    # Vanilla SGD parameter update + normalization
-    # with square rooted cache
-    layer.weights += -self.current_learning_rate * \
-                     weight_momentums_corrected / \
-                     (np.sqrt(weight_cache_corrected) +
-                      self.epsilon)
+        # Vanilla SGD parameter update + normalization
+        # with square rooted cache
+        layer.weights += -self.current_learning_rate * \
+                         weight_momentums_corrected / \
+                         (np.sqrt(weight_cache_corrected) +
+                          self.epsilon)
 
-    layer.biases += -self.current_learning_rate * \
-                    bias_momentums_corrected / \
-                    (np.sqrt(bias_cache_corrected) +
-                     self.epsilon)
+        layer.biases += -self.current_learning_rate * \
+                        bias_momentums_corrected / \
+                        (np.sqrt(bias_cache_corrected) +
+                         self.epsilon)
 
     # Call once after any parameter updates
     def post_update_params(self):
@@ -609,46 +610,62 @@ class Loss_MeanSquaredError(Loss): # L2 loss
 
 # Mean Absolute Error loss
 class Loss_MeanAbsoluteError(Loss): # L1 loss
-# Forward pass
-def forward(self, y_pred, y_true):
-# Calculate loss
-sample_losses = np.mean(np.abs(y_true - y_pred), axis=-1)
-# Return losses
-return sample_losses
-nnfs_S8532 win1857@yahoo.co.uk
-Chapter 17 | Regression | 471
-# Backward pass
-def backward(self, dvalues, y_true):
-# Number of samples
-samples = len(dvalues)
-# Number of outputs in every sample
-# We'll use the first sample to count them
-outputs = len(dvalues[0])
-# Calculate gradient
-self.dinputs = np.sign(y_true - dvalues) / outputs
-# Normalize gradient
-self.dinputs = self.dinputs / samples
+
+    # Forward pass
+    def forward(self, y_pred, y_true):
+
+        # Calculate loss
+        sample_losses = np.mean(np.abs(y_true - y_pred), axis=-1)
+
+        # Return losses
+        return sample_losses
+
+    # Backward pass
+    def backward(self, dvalues, y_true):
+
+        # Number of samples
+        samples = len(dvalues)
+
+        # Number of outputs in every sample
+        # We'll use the first sample to count them
+        outputs = len(dvalues[0])
+
+        # Calculate gradient
+        self.dinputs = np.sign(y_true - dvalues) / outputs
+        # Normalize gradient
+        self.dinputs = self.dinputs / samples
+
+
 # Create dataset
 X, y = sine_data()
+
 # Create Dense layer with 1 input feature and 64 output values
 dense1 = Layer_Dense(1, 64)
+
 # Create ReLU activation (to be used with Dense layer):
 activation1 = Activation_ReLU()
+
 # Create second Dense layer with 64 input features (as we take output
 # of previous layer here) and 64 output values
 dense2 = Layer_Dense(64, 64)
+
 # Create ReLU activation (to be used with Dense layer):
 activation2 = Activation_ReLU()
+
 # Create third Dense layer with 64 input features (as we take output
 # of previous layer here) and 1 output value
 dense3 = Layer_Dense(64, 1)
+
 # Create Linear activation:
 activation3 = Activation_Linear()
+
 # Create loss function
 loss_function = Loss_MeanSquaredError()
+
 # Create optimizer
 optimizer = Optimizer_Adam(learning_rate=0.005, decay=1e-3)
-472 | Neural Networks from Scratch
+
+
 # Accuracy precision for accuracy calculation
 # There are no really accuracy factor for regression problem,
 # but we can simulate/approximate it. We'll calculate it by checking
@@ -657,37 +674,47 @@ optimizer = Optimizer_Adam(learning_rate=0.005, decay=1e-3)
 # We'll calculate this precision as a fraction of standard deviation
 # of all the ground truth values
 accuracy_precision = np.std(y) / 250
+
+
 # Train in loop
 for epoch in range(10001):
-# Perform a forward pass of our training data through this layer
-dense1.forward(X)
-# Perform a forward pass through activation function
-# takes the output of first dense layer here
-activation1.forward(dense1.output)
-# Perform a forward pass through second Dense layer
-# takes outputs of activation function
-# of first layer as inputs
-dense2.forward(activation1.output)
-# Perform a forward pass through activation function
-# takes the output of second dense layer here
-activation2.forward(dense2.output)
-# Perform a forward pass through third Dense layer
-# takes outputs of activation function of second layer as inputs
-dense3.forward(activation2.output)
-# Perform a forward pass through activation function
-# takes the output of third dense layer here
-activation3.forward(dense3.output)
-# Calculate the data loss
-data_loss = loss_function.calculate(activation3.output, y)
-# Calculate regularization penalty
-regularization_loss = \
-loss_function.regularization_loss(dense1) + \
-loss_function.regularization_loss(dense2) + \
-loss_function.regularization_loss(dense3)
-# Calculate overall loss
-loss = data_loss + regularization_loss
-nnfs_S8532 win1857@yahoo.co.uk
-Chapter 17 | Regression | 473
+
+    # Perform a forward pass of our training data through this layer
+    dense1.forward(X)
+
+    # Perform a forward pass through activation function
+    # takes the output of first dense layer here
+    activation1.forward(dense1.output)
+
+    # Perform a forward pass through second Dense layer
+    # takes outputs of activation function
+    # of first layer as inputs
+    dense2.forward(activation1.output)
+
+    # Perform a forward pass through activation function
+    # takes the output of second dense layer here
+    activation2.forward(dense2.output)
+
+    # Perform a forward pass through third Dense layer
+    # takes outputs of activation function of second layer as inputs
+    dense3.forward(activation2.output)
+
+    # Perform a forward pass through activation function
+    # takes the output of third dense layer here
+    activation3.forward(dense3.output)
+
+    # Calculate the data loss
+    data_loss = loss_function.calculate(activation3.output, y)
+
+    # Calculate regularization penalty
+    regularization_loss = \
+        loss_function.regularization_loss(dense1) + \
+        loss_function.regularization_loss(dense2) + \
+        loss_function.regularization_loss(dense3)
+
+    # Calculate overall loss
+    loss = data_loss + regularization_loss
+
 # Calculate accuracy from output of activation2 and targets
 # To calculate it we're taking absolute difference between
 # predictions and ground truth values and compare if differences
