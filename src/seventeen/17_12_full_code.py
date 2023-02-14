@@ -9,8 +9,8 @@ nnfs.init()
 class Layer_Dense:
     # Layer initialization
     def __init__(self, n_inputs, n_neurons,
-            weight_regularizer_l1=0, weight_regularizer_l2=0,
-            bias_regularizer_l1=0, bias_regularizer_l2=0):
+                 weight_regularizer_l1=0, weight_regularizer_l2=0,
+                 bias_regularizer_l1=0, bias_regularizer_l2=0):
         # Initialize weights and biases
         self.weights = 0.1 * np.random.randn(n_inputs, n_neurons)
         self.biases = np.zeros((1, n_neurons))
@@ -42,7 +42,7 @@ class Layer_Dense:
         # L2 on weights
         if self.weight_regularizer_l2 > 0:
             self.dweights += 2 * self.weight_regularizer_l2 * \
-            self.weights
+                             self.weights
         # L1 on biases
         if self.bias_regularizer_l1 > 0:
             dL1 = np.ones_like(self.biases)
@@ -51,9 +51,10 @@ class Layer_Dense:
         # L2 on biases
         if self.bias_regularizer_l2 > 0:
             self.dbiases += 2 * self.bias_regularizer_l2 * \
-            self.biases
-            # Gradient on values
-            self.dinputs = np.dot(dvalues, self.weights.T)
+                            self.biases
+
+        # Gradient on values
+        self.dinputs = np.dot(dvalues, self.weights.T)
 
 
 # Dropout
@@ -88,6 +89,7 @@ class Activation_ReLU:
         self.inputs = inputs
         # Calculate output values from inputs
         self.output = np.maximum(0, inputs)
+
     # Backward pass
     def backward(self, dvalues):
         # Since we need to modify original variable,
@@ -108,7 +110,7 @@ class Activation_Softmax:
 
         # Get unnormalized probabilities
         exp_values = np.exp(inputs - np.max(inputs, axis=1,
-                                             keepdims=True))
+                                            keepdims=True))
 
         # Normalize them for each sample
         probabilities = exp_values / np.sum(exp_values, axis=1,
@@ -117,7 +119,6 @@ class Activation_Softmax:
 
     # Backward pass
     def backward(self, dvalues):
-
         # Create uninitialized array
         self.dinputs = np.empty_like(dvalues)
 
@@ -133,7 +134,7 @@ class Activation_Softmax:
             # Calculate sample-wise gradient
             # and add it to the array of sample gradients
             self.dinputs[index] = np.dot(jacobian_matrix,
-            single_dvalues)
+                                         single_dvalues)
 
 
 # Sigmoid activation
@@ -149,6 +150,7 @@ class Activation_Sigmoid:
     def backward(self, dvalues):
         # Derivative - calculates from output of the sigmoid function
         self.dinputs = dvalues * (1 - self.output) * self.output
+
 
 # Linear activation
 class Activation_Linear:
@@ -251,8 +253,8 @@ class Optimizer_Adagrad:
             layer.bias_cache = np.zeros_like(layer.biases)
 
         # Update cache with squared current gradients
-        layer.weight_cache += layer.dweights**2
-        layer.bias_cache += layer.dbiases**2
+        layer.weight_cache += layer.dweights ** 2
+        layer.bias_cache += layer.dbiases ** 2
 
         # Vanilla SGD parameter update + normalization
         # with square rooted cache
@@ -285,6 +287,7 @@ class Optimizer_RMSprop:
         if self.decay:
             self.current_learning_rate = self.learning_rate * \
                                          (1. / (1. + self.decay * self.iterations))
+
     # Update parameters
     def update_params(self, layer):
 
@@ -296,23 +299,22 @@ class Optimizer_RMSprop:
 
         # Update cache with squared current gradients
         layer.weight_cache = self.rho * layer.weight_cache + \
-                             (1 - self.rho) * layer.dweights**2
+                             (1 - self.rho) * layer.dweights ** 2
         layer.bias_cache = self.rho * layer.bias_cache + \
-                           (1 - self.rho) * layer.dbiases**2
+                           (1 - self.rho) * layer.dbiases ** 2
 
         # Vanilla SGD parameter update + normalization
         # with square rooted cache
         layer.weights += -self.current_learning_rate * \
-        layer.dweights / \
-        (np.sqrt(layer.weight_cache) + self.epsilon)
+                         layer.dweights / \
+                         (np.sqrt(layer.weight_cache) + self.epsilon)
         layer.biases += -self.current_learning_rate * \
-        layer.dbiases / \
-        (np.sqrt(layer.bias_cache) + self.epsilon)
+                        layer.dbiases / \
+                        (np.sqrt(layer.bias_cache) + self.epsilon)
 
     # Call once after any parameter updates
     def post_update_params(self):
         self.iterations += 1
-
 
 
 # Adam optimizer
@@ -366,10 +368,10 @@ class Optimizer_Adam:
 
         # Update cache with squared current gradients
         layer.weight_cache = self.beta_2 * layer.weight_cache + \
-                             (1 - self.beta_2) * layer.dweights**2
+                             (1 - self.beta_2) * layer.dweights ** 2
 
         layer.bias_cache = self.beta_2 * layer.bias_cache + \
-                           (1 - self.beta_2) * layer.dbiases**2
+                           (1 - self.beta_2) * layer.dbiases ** 2
 
         # Get corrected cache
         weight_cache_corrected = layer.weight_cache / \
@@ -443,7 +445,6 @@ class Loss:
         return data_loss
 
 
-
 # Cross-entropy loss
 class Loss_CategoricalCrossentropy(Loss):
 
@@ -506,7 +507,6 @@ class Activation_Softmax_Loss_CategoricalCrossentropy():
 
     # Forward pass
     def forward(self, inputs, y_true):
-
         # Output layer's activation function
         self.activation.forward(inputs)
 
@@ -516,10 +516,8 @@ class Activation_Softmax_Loss_CategoricalCrossentropy():
         # Calculate and return loss value
         return self.loss.calculate(self.output, y_true)
 
-
     # Backward pass
     def backward(self, dvalues, y_true):
-
         # Number of samples
         samples = len(dvalues)
 
@@ -543,7 +541,6 @@ class Loss_BinaryCrossentropy(Loss):
 
     # Forward pass
     def forward(self, y_pred, y_true):
-
         # Clip data to prevent division by 0
         # Clip both sides to not drag mean towards any value
         y_pred_clipped = np.clip(y_pred, 1e-7, 1 - 1e-7)
@@ -558,7 +555,6 @@ class Loss_BinaryCrossentropy(Loss):
 
     # Backward pass
     def backward(self, dvalues, y_true):
-
         # Number of samples
         samples = len(dvalues)
 
@@ -578,22 +574,19 @@ class Loss_BinaryCrossentropy(Loss):
         self.dinputs = self.dinputs / samples
 
 
-
 # Mean Squared Error loss
-class Loss_MeanSquaredError(Loss): # L2 loss
+class Loss_MeanSquaredError(Loss):  # L2 loss
 
     # Forward pass
     def forward(self, y_pred, y_true):
-
         # Calculate loss
-        sample_losses = np.mean((y_true - y_pred)**2, axis=-1)
+        sample_losses = np.mean((y_true - y_pred) ** 2, axis=-1)
 
         # Return losses
         return sample_losses
 
     # Backward pass
     def backward(self, dvalues, y_true):
-
         # Number of samples
         samples = len(dvalues)
 
@@ -609,11 +602,10 @@ class Loss_MeanSquaredError(Loss): # L2 loss
 
 
 # Mean Absolute Error loss
-class Loss_MeanAbsoluteError(Loss): # L1 loss
+class Loss_MeanAbsoluteError(Loss):  # L1 loss
 
     # Forward pass
     def forward(self, y_pred, y_true):
-
         # Calculate loss
         sample_losses = np.mean(np.abs(y_true - y_pred), axis=-1)
 
@@ -622,7 +614,6 @@ class Loss_MeanAbsoluteError(Loss): # L1 loss
 
     # Backward pass
     def backward(self, dvalues, y_true):
-
         # Number of samples
         samples = len(dvalues)
 
@@ -665,7 +656,6 @@ loss_function = Loss_MeanSquaredError()
 # Create optimizer
 optimizer = Optimizer_Adam(learning_rate=0.005, decay=1e-3)
 
-
 # Accuracy precision for accuracy calculation
 # There are no really accuracy factor for regression problem,
 # but we can simulate/approximate it. We'll calculate it by checking
@@ -675,10 +665,8 @@ optimizer = Optimizer_Adam(learning_rate=0.005, decay=1e-3)
 # of all the ground truth values
 accuracy_precision = np.std(y) / 250
 
-
 # Train in loop
 for epoch in range(10001):
-
     # Perform a forward pass of our training data through this layer
     dense1.forward(X)
 
@@ -721,14 +709,16 @@ for epoch in range(10001):
 # are lower than given precision value
 predictions = activation3.output
 accuracy = np.mean(np.absolute(predictions - y) <
-accuracy_precision)
+                   accuracy_precision)
+
 if not epoch % 100:
-print(f'epoch: {epoch}, ' +
-f'acc: {accuracy:.3f}, ' +
-f'loss: {loss:.3f} (' +
-f'data_loss: {data_loss:.3f}, ' +
-f'reg_loss: {regularization_loss:.3f}), ' +
-f'lr: {optimizer.current_learning_rate}')
+    print(f'epoch: {epoch}, ' +
+          f'acc: {accuracy:.3f}, ' +
+          f'loss: {loss:.3f} (' +
+          f'data_loss: {data_loss:.3f}, ' +
+          f'reg_loss: {regularization_loss:.3f}), ' +
+          f'lr: {optimizer.current_learning_rate}')
+
 # Backward pass
 loss_function.backward(activation3.output, y)
 activation3.backward(loss_function.dinputs)
@@ -737,6 +727,7 @@ activation2.backward(dense3.dinputs)
 dense2.backward(activation2.dinputs)
 activation1.backward(dense2.dinputs)
 dense1.backward(activation1.dinputs)
+
 # Update weights and biases
 optimizer.pre_update_params()
 optimizer.update_params(dense1)
