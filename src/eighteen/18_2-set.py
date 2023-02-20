@@ -765,6 +765,15 @@ optimizer.post_update_params()
 #             # Temporary
 #             pass
 
+
+# Input "layer"
+class Layer_Input:
+
+    # Forward pass
+    def forward(self, inputs):
+        self.output = inputs
+
+
 # Model class
 class Model:
 
