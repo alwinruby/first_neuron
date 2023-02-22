@@ -742,30 +742,6 @@ optimizer.update_params(dense3)
 optimizer.post_update_params()
 
 
-
-
-# # Model class
-# class Model:
-#     def __init__(self):
-#
-#         # Create a list of network objects
-#         self.layers = []
-#
-#     # Add objects to the model
-#     def add(self, layer):
-#
-#         self.layers.append(layer)
-#
-#     # Train the model
-#     def train(self, X, y, *, epochs=1, print_every=1):
-#
-#         # Main training loop
-#         for epoch in range(1, epochs+1):
-#
-#             # Temporary
-#             pass
-
-
 # Input "layer"
 class Layer_Input:
 
