@@ -9,3 +9,5 @@ in Python or a 1-dimensional array in NumPy.**
 **A dot product of two vectors is a sum of products of consecutive vector elements. Both vectors
 must be of the same size (have an equal number of elements).**
 
+**Using Python 3.8.9**
+
